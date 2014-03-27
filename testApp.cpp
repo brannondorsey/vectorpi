@@ -12,7 +12,7 @@ void testApp::setup(){
     ofSetLineWidth(1);
     ofNoFill();
     
-    ofBuffer buffer = ofBufferFromFile("english.txt");
+    ofBuffer buffer = ofBufferFromFile("languages/english.txt");
     characters = buffer.getText();
     int numCharacters = characters.length();
     characterIncrement = float(360) / numCharacters;

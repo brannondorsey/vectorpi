@@ -1,11 +1,12 @@
 #pragma once
 
 #include "ofMain.h"
+#include "Word.h"
 
 class testApp : public ofBaseApp{
 
 	public:
-    
+        
         int lineLength;
         float characterIncrement; // e.g. 7 degrees
         string characters;
@@ -13,6 +14,7 @@ class testApp : public ofBaseApp{
         ofPoint startPoint;
         ofPoint nextPoint;
         ofPolyline polyline;
+        vector<Word> words;
     
 		void setup();
 		void update();
