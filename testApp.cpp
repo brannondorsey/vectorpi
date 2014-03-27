@@ -3,13 +3,13 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     
-    text = "why";
+    text = "onomatopoeia";
     lineLength = 150;
     
     ofEnableAntiAliasing();
     ofBackground(255);
     ofSetColor(0);
-    ofSetLineWidth(3);
+    ofSetLineWidth(1);
     ofNoFill();
     
     ofBuffer buffer = ofBufferFromFile("english.txt");
@@ -18,8 +18,9 @@ void testApp::setup(){
     characterIncrement = float(360) / numCharacters;
     
     float angleInDegrees;
-    float rotationSum = 0;
     ofPoint translationSum(0, 0);
+    ofPoint currentCenter(0, 0);
+    float theta = 0;
     
     polyline = ofPolyline();
     polyline.addVertex(0, 0);
@@ -50,20 +51,18 @@ void testApp::setup(){
             //space
         }
         
-        rotationSum += angleInDegrees;
-        cout<<"character: "<<text[i]<<" index: "<<characters.find(text[i])<<" angle: "<<angleInDegrees<<endl;
-        float x = lineLength * cos(angleInDegrees);
-        float y = lineLength * sin(angleInDegrees);
-        // cout<<"x: "<<x<<" y: "<<y<<endl;
-        polyline.addVertex(x, y);
-        // translationSum += ofPoint(x, y);
-        ofTranslate(x, y);
-        ofRotate(angleInDegrees);
+        theta += angleInDegrees;
+        
+        float x = lineLength * cos(ofDegToRad(theta));
+        float y = lineLength * sin(ofDegToRad(theta));
+        
+        cout<<"character: "<<text[i]<<" index: "<<characters.find(text[i])<<" angle: "<<angleInDegrees<<
+        " x: "<<x<<" y: "<<y<<endl;
+        polyline.addVertex(currentCenter + ofPoint(x, y));
+        
+        currentCenter += ofPoint(x, y);
 
     }
-    
-//     ofTranslate(-translationSum.x, -translationSum.y);
-//     ofRotate(-rotationSum);
     
     vector<ofPoint> vertices = polyline.getVertices();
     for (int i = 0; i < vertices.size(); i++) {
@@ -82,10 +81,14 @@ void testApp::update(){
 void testApp::draw(){
     
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    // ofRect(0,0, 100, 100);
+    ofRectangle bound = polyline.getBoundingBox();
+    
+    float scale = 100 / max(bound.width, bound.height);
+    ofScale(scale, scale);
     polyline.draw();
     
-    //cout<<endl;
+
+    
 }
 
 //--------------------------------------------------------------
