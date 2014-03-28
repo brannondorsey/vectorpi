@@ -8,14 +8,15 @@
 
 #ifndef vectorPi_1_Word_h
 #define vectorPi_1_Word_h
-# include "ofMain.h"
+#include "ofMain.h"
 
 class Word{
     
     public:
     
-        Word(int x, int y, float rotation);
         Word(ofPoint start, float rotation);
+        void moveTo(int x, int y);
+        void moveTo(ofPoint start);
         ofRectangle getBoundBox();
         float getEndHeading();
         void draw();
@@ -24,6 +25,7 @@ class Word{
     
         float rotation;
         ofPoint start;
+        ofPolyline  polyline;
 
 };
 
