@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "Word.h"
 
-class testApp : public ofBaseApp{
+class ofApp : public ofBaseApp{
 
 	public:
         
