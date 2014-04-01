@@ -3,9 +3,6 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     
-    text = "onomatopoeia";
-    lineLength = 150;
-    
     ofEnableAntiAliasing();
     ofBackground(255);
     ofSetColor(0);
@@ -14,86 +11,86 @@ void testApp::setup(){
     
     ofBuffer buffer = ofBufferFromFile("languages/english.txt");
     characters = buffer.getText();
-    int numCharacters = characters.length();
-    characterIncrement = float(360) / numCharacters;
+    characterIncrement = float(360) / characters.length();
     
-    float angleInDegrees;
-    ofPoint translationSum(0, 0);
-    ofPoint currentCenter(0, 0);
-    float theta = 0;
+    buffer = ofBufferFromFile("writings/demo.txt");
+    text = buffer.getText();
+    std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+    cout<<text<<endl;
+    vector<string> textWords = ofSplitString(text, " ");
     
-    polyline = ofPolyline();
-    polyline.addVertex(0, 0);
+    offset = ofPoint(0, 0);
+    scale = 1;
+    
+    int space = 50;
+    int x = 0;
+    int y = 0;
 
-    
-    /*
-         Polar to Cartesian conversion: 
-         float x = r * cos(theta);
-         float y = r * sin(theta);
-     
-        For each letter:
-            1. calculate polar coordinates (radius, theta)
-            2. convert to cartesian coordinates
-            3. lineTo cartesian coordinates
-            4. rotate world to re-orient polar coordinates as 0 degrees
-     */
-     
-    
-    for (int i = 0; i < text.length(); i++) {
+    for (int i = 0; i < textWords.size(); i++) {
         
-        int index = characters.find(text[i]);
-        
-        if (index != -1) {
-            
-            angleInDegrees = (index + 1) * characterIncrement;
-            
-        } else {
-            //space
+        if ((i % 40 == 0) && (x != 0)){
+            y += space;
+            x = 0;
         }
         
-        theta += angleInDegrees;
+        ofPoint start(x, y);
+        Word word = Word(textWords[i], start, 0, characterIncrement, characters);
+        words.push_back(word);
         
-        float x = lineLength * cos(ofDegToRad(theta));
-        float y = lineLength * sin(ofDegToRad(theta));
-        
-        cout<<"character: "<<text[i]<<" index: "<<characters.find(text[i])<<" angle: "<<angleInDegrees<<
-        " x: "<<x<<" y: "<<y<<endl;
-        polyline.addVertex(currentCenter + ofPoint(x, y));
-        
-        currentCenter += ofPoint(x, y);
-
+        x += space;
     }
-    
-    vector<ofPoint> vertices = polyline.getVertices();
-    for (int i = 0; i < vertices.size(); i++) {
-        // cout<<i<<": "<<vertices[i].x<<", "<<vertices[i].y<<endl;
-    }
-    
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-
     
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
     
-    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    ofRectangle bound = polyline.getBoundingBox();
+    ofRectangle container = getWordsBoundingBox();
+    ofPoint center = container.getCenter();
+//    float scale = ofGetWidth()/2 / max(container.width, container.height);
     
-    float scale = 100 / max(bound.width, bound.height);
+    ofPushMatrix();
+    ofTranslate(offset);
+    ofPushMatrix();
+    ofTranslate(center.x, center.y);
     ofScale(scale, scale);
-    polyline.draw();
-    
+    for (int i = 0; i < words.size(); i++) {
+        words[i].draw();
+    }
+    ofPopMatrix();
+    ofPopMatrix();
+}
 
-    
+//--------------------------------------------------------------
+ofRectangle testApp::getWordsBoundingBox(){
+    ofRectangle container;
+    for (int i = 0; i < words.size(); i++) {
+        container = container.getUnion(words[i].getBoundingBox());
+    }
+    return container;
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-
+    
+    int speed = 10;
+    float scaleInterval = .2;
+    
+    if (key == OF_KEY_RIGHT) offset.x += speed;
+    if (key == OF_KEY_LEFT) offset.x -= speed;
+    if (key == OF_KEY_DOWN) offset.y += speed;
+    if (key == OF_KEY_UP) offset.y -= speed;
+    
+    if (key == '-') scale -= scaleInterval;
+    if (key == '=') scale += scaleInterval;
+    
+    if (key == ' '){
+        ofSaveScreen("images/" + ofToString(ofGetUnixTime()) + ".png");
+    }
 }
 
 //--------------------------------------------------------------

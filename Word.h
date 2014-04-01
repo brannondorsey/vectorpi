@@ -1,32 +1,43 @@
 //
-//  Word.h
+//  Test.h
 //  vectorPi_1
 //
 //  Created by bdorse on 3/27/14.
 //
 //
 
-#ifndef vectorPi_1_Word_h
-#define vectorPi_1_Word_h
-#include "ofMain.h"
+#ifndef vectorPi_1_Test_h
+#define vectorPi_1_Test_h
+# include "ofMain.h"
 
 class Word{
+public:
     
-    public:
+    Word(string word, ofPoint start, float rotation, float angleIncrement, string characters);
+//    void setup(string word, ofPoint start, float rotation, float angleIncrement, string characters);
+    void draw();
+    void rotate(float rotation);
+    void moveTo(ofPoint start);
+    void fitTo(float size);
+    void scaleWidthTo(float size);
+    void scaleHeightTo(float size);
+    float getEndHeading();
+    ofPoint getFirstVertice();
+    ofRectangle getBoundingBox();
+    ofPoint getLastVertice();
     
-        Word(ofPoint start, float rotation);
-        void moveTo(int x, int y);
-        void moveTo(ofPoint start);
-        ofRectangle getBoundBox();
-        float getEndHeading();
-        void draw();
+protected:
     
-    protected:
+    int _lineLength;
+    int _lineWidth;
+    float _circleWidth;
+    float _angleIncrement;
+    float _rotation;
+    ofPolyline _polyline;
+    string _characters;
+    string _word;
     
-        float rotation;
-        ofPoint start;
-        ofPolyline  polyline;
-
 };
+
 
 #endif

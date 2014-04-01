@@ -8,17 +8,20 @@ class testApp : public ofBaseApp{
 	public:
         
         int lineLength;
+        float scale;
         float characterIncrement; // e.g. 7 degrees
         string characters;
         string text;
         ofPoint startPoint;
         ofPoint nextPoint;
+        ofPoint offset;
         ofPolyline polyline;
         vector<Word> words;
     
 		void setup();
 		void update();
 		void draw();
+        ofRectangle getWordsBoundingBox();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
