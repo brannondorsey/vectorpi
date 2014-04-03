@@ -10,19 +10,22 @@ class testApp : public ofBaseApp{
         int lineLength;
         float scale;
         float characterIncrement; // e.g. 7 degrees
+        bool needsNewPlacement;
         string characters;
         string text;
         ofPoint startPoint;
         ofPoint nextPoint;
         ofPoint offset;
         ofPoint screenCenter;
+        ofRectangle bound;
         ofPolyline polyline;
+        vector<string> textWords;
         vector<Word> words;
     
 		void setup();
 		void update();
 		void draw();
-        void render(ofRectangle boundingBox);
+        void placeWords(ofVec2f start);
         ofRectangle getWordsBoundingBox();
         
 		void keyPressed(int key);

@@ -15,8 +15,8 @@ public:
     
     ofPoint lastPoint;
     
-    Word(string word, float angleIncrement, string characters);
-    void draw(ofVec2f start, float rotation);
+    Word(string word, ofVec2f start, float rotation, float angleIncrement, string characters);
+    void draw();
     void rotate(float rotation);
     float getEndHeading(float rotation);
     ofVec2f getFirstVertice();

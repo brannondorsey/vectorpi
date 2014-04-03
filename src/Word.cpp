@@ -8,7 +8,7 @@
 
 #include "Word.h"
 
-Word::Word(string word, float angleIncrement, string characters){
+Word::Word(string word, ofVec2f start, float rotation, float angleIncrement, string characters){
     
     _lineLength = 25;
     _lineWidth = 1;
@@ -28,51 +28,34 @@ Word::Word(string word, float angleIncrement, string characters){
             
             angleInDegrees = (index + 1) * _angleIncrement;
             _angles.push_back(angleInDegrees);
-            
-//            float x = 1 * cos(ofDegToRad(angleInDegrees));
-//            float y = 1 * sin(ofDegToRad(angleInDegrees));
-            
-//            ofVec2f angle(x, y);
-//            angle.normalize();
-//            _angles.push_back(angle);
-//            cout<<"Index: "<<_characters.find(_word[i])<<" Letter: "<<_word[i]<<endl;
-//            cout<<"Angle in degrees: "<<angleInDegrees<<endl;
-//            float rawAngle = ofVec2f(1, 0).angle(angle);
-//            if (rawAngle <= 0) {
-//                rawAngle = ofMap(rawAngle, 0, -180, 360, 180);
-//            }
-//            cout<<"Calculated angle with ofVec2f.angle: "<<rawAngle<<endl;
-//            cout<<"atan2 in degrees: "<<ofRadToDeg(atan2(angle.x, angle.y))<<endl;
-//            cout<<endl;
+        
         }
     }
-}
-
-void Word::draw(ofVec2f start, float rotation){
-
+    
+    
     float angleSum = rotation;
-    _polyline.clear();
     _polyline.addVertex(start);
-    
-    ofSetLineWidth(_lineWidth);
-    ofFill();
-    ofCircle(start, _circleWidth / 2);
-    ofNoFill();
-    
-    ofVec2f point = start;
+    ofVec2f center = start;
     
     for (int i = 0; i < _angles.size(); i++) {
-        
+      
         angleSum += _angles[i];
         float x = _lineLength * cos(ofDegToRad(angleSum));
         float y = _lineLength * sin(ofDegToRad(angleSum));
         
         ofVec2f angle(x, y);
-        point += angle;
-        _polyline.addVertex(point);
-
+        center += angle;
+        _polyline.addVertex(center);
+        
     }
-    
+}
+
+void Word::draw(){
+
+    ofSetLineWidth(_lineWidth);
+    ofFill();
+    ofCircle(getFirstVertice(), _circleWidth / 2);
+    ofNoFill();
     _polyline.draw();
 
 }
