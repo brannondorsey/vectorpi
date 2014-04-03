@@ -13,7 +13,7 @@ void testApp::setup(){
     characters = buffer.getText();
     characterIncrement = float(360) / characters.length();
     
-    buffer = ofBufferFromFile("writings/demo.txt");
+    buffer = ofBufferFromFile("writings/the_stranger.txt");
     text = buffer.getText();
     std::transform(text.begin(), text.end(), text.begin(), ::tolower);
     cout<<text<<endl;
@@ -66,7 +66,7 @@ void testApp::draw(){
     
     ofTranslate(screenCenter - center);
     ofSetRectMode(OF_RECTMODE_CENTER);
-    ofRect(container);
+//    ofRect(container);
     ofScale(scale, scale);
     
     float heading = 0;
@@ -82,10 +82,9 @@ void testApp::draw(){
             ofTranslate(lastWord.getLastVertice() + offset);
             ofRotate(lastWord.getEndHeading());
         }
+
         
-        float red = ofMap(i, 0, words.size() - 1 , 0, 255);
-        float blue = ofMap(i, 0, words.size() -1 , 255, 0);
-        ofSetColor(red, 0, blue);
+        ofSetColor(ofMap(i, 0, words.size() - 1 , 0, 255));
         words[i].draw(ofPoint(0,0));
 
     }
@@ -99,8 +98,8 @@ ofRectangle testApp::getWordsBoundingBox(){
     ofRectangle container = words[0].getBoundingBox();
     for (int i = 1; i < words.size(); i++) {
         container = container.getUnion(words[i].getBoundingBox());
-        cout<<container<<endl;
-        cout<<endl;
+//        cout<<container<<endl;
+//        cout<<endl;
     }
     return container;
 }
