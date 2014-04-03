@@ -8,93 +8,87 @@
 
 #include "Word.h"
 
-Word::Word(string word, float rotation, float angleIncrement, string characters){
+Word::Word(string word, float angleIncrement, string characters){
     
     _lineLength = 25;
     _lineWidth = 1;
     _circleWidth = 5;
-    _theta = 0;
     
     _word = word;
     _characters = characters;
-    _rotation = rotation;
     _angleIncrement = angleIncrement;
-    _polyline = ofPolyline();
-    
-    ofPoint center = ofPoint(0, 0);
-    _polyline.addVertex(center);
     
     float angleInDegrees;
     
     for (int i = 0; i < _word.length(); i++) {
         
         int index = _characters.find(_word[i]);
-        
         if (index != -1) {
             
             angleInDegrees = (index + 1) * _angleIncrement;
             
+            float x = 1 * cos(ofDegToRad(angleInDegrees));
+            float y = 1 * sin(ofDegToRad(angleInDegrees));
+            
+            ofVec2f angle(x, y);
+            angle.normalize();
+            _angles.push_back(angle);
+            cout<<"Index: "<<_characters.find(_word[i])<<" Letter: "<<_word[i]<<endl;
+            cout<<"Angle in degrees: "<<angleInDegrees<<endl;
+//            cout<<"Calculated angle with ofVec2f.angle: "<<angle.angle(ofVec2f(0, 0))<<endl;
+//            cout<<"atan2 in degrees: "<<ofRadToDeg(atan2(angle.x, angle.y))<<endl;
+            cout<<endl;
         }
-        
-        _theta += angleInDegrees;
-        
-        float x = _lineLength * cos(ofDegToRad(_theta));
-        float y = _lineLength * sin(ofDegToRad(_theta));
-        
-        _polyline.addVertex(center + ofPoint(x, y));
-        
-        center += ofPoint(x, y);
     }
 }
 
-void Word::draw(ofPoint start){
+void Word::draw(ofVec2f start, float rotation){
+
+    
+    ofPolyline polyline;
+    start.rotate(rotation);
+    
+    // start.scale(_lineLength);
+    polyline.addVertex(start);
     
     ofSetLineWidth(_lineWidth);
-//    ofPushMatrix();
-//    ofTranslate(start);
-//    ofRotate(_rotation);
     ofFill();
-    ofCircle(getFirstVertice(), _circleWidth / 2);
+    ofCircle(start, _circleWidth / 2);
     ofNoFill();
-    _polyline.draw();
-//    ofPopMatrix();
-}
-
-void Word::rotate(float rotation){
-    _rotation += rotation;
-}
-
-void Word::moveTo(ofPoint start){
     
-}
-
-void Word::fitTo(float size){
+    ofVec2f point = start;
     
-//    ofRectangle bound = _polyline.getBoundingBox();
-//    float scale = size / max(bound.width, bound.height);
-//    ofScale(scale, scale);
+    for (int i = 1; i < _angles.size(); i++) {
+        ofVec2f angle = _angles[i];
+        ofVec2f prevAngle = _angles[i - 1];
+        angle.rotate(angle.angle(prevAngle));
+        angle.scale(_lineLength);
+        point += angle;
+        polyline.addVertex(point);
+//        cout<<point<<endl;
+    }
+//    cout<<endl;
+    
+    polyline.draw();
+
 }
 
 float Word::getEndHeading(){
     
-//    vector<ofPoint> vertices = _polyline.getVertices();
-//    ofPoint secondToLast = vertices[vertices.size() - 2];
-//    ofPoint last = vertices[vertices.size() - 1];
-//    return secondToLast.angle(last);
-    return _theta;
+    ofVec2f secondToLast = _angles[_angles.size() - 2];
+    ofVec2f last = _angles[_angles.size() - 1];
+    return secondToLast.angle(last);
 }
 
-ofPoint Word::getFirstVertice(){
-    vector<ofPoint> vertices = _polyline.getVertices();
-    return vertices[0];
+ofVec2f Word::getFirstVertice(){
+    return _angles[0];
 }
 
-ofPoint Word::getLastVertice(){
-    vector<ofPoint> vertices = _polyline.getVertices();
-    return vertices[vertices.size() - 1];
+ofVec2f Word::getLastVertice(){
+    return _angles[_angles.size() - 1];
 }
 
 ofRectangle Word::getBoundingBox(){
-    return _polyline.getBoundingBox();
+
 }
 

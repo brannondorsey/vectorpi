@@ -13,7 +13,7 @@ void testApp::setup(){
     characters = buffer.getText();
     characterIncrement = float(360) / characters.length();
     
-    buffer = ofBufferFromFile("writings/the_stranger.txt");
+    buffer = ofBufferFromFile("writings/demo.txt");
     text = buffer.getText();
     std::transform(text.begin(), text.end(), text.begin(), ::tolower);
     cout<<text<<endl;
@@ -22,30 +22,13 @@ void testApp::setup(){
     screenCenter = ofPoint(ofGetWidth()/2, ofGetHeight()/2);
     offset = ofPoint(0, 0);
     scale = 1;
-    
-    
-//    for (int i = 0; i < textWords.size(); i++) {
-//        
-//        if ((i % 40 == 0) && (x != 0)){
-//            y += space;
-//            x = 0;
-//        }
-//        
-//        ofPoint start(x, y);
-//        Word word = Word(textWords[i], start, 0, characterIncrement, characters);
-//        words.push_back(word);
-//        
-//        x += space;
-//    }
         
     for (int i = 0; i < textWords.size(); i++) {
         
-        Word word = Word(textWords[i], 0, characterIncrement, characters);
+        Word word = Word(textWords[i], characterIncrement, characters);
         words.push_back(word);
         
     }
-    
-//    getWordsBoundingBox()
 }
 
 //--------------------------------------------------------------
@@ -56,40 +39,40 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
     
-    ofRectangle container = getWordsBoundingBox();
-    ofPoint center = container.getCenter();
+//    ofRectangle container = getWordsBoundingBox();
+//    ofPoint center = container.getCenter();
 //    float scale = ofGetWidth()/2 / max(container.width, container.height);
-    
+    //    ofTranslate(screenCenter - center);
+
     ofPushMatrix();
     ofTranslate(offset);
-    ofPushMatrix();
+    render(ofRectangle(0,0,0,0));
+    ofPopMatrix();
     
-    ofTranslate(screenCenter - center);
-    ofSetRectMode(OF_RECTMODE_CENTER);
-//    ofRect(container);
-    ofScale(scale, scale);
+}
+
+void testApp::render(ofRectangle bounding){
     
     float heading = 0;
     int space = 10;
+    ofVec2f start(ofGetWidth()/2, ofGetHeight()/2);
     
     for (int i = 0; i < words.size(); i++) {
         
+        ofVec2f center;
+        
         if (i > 0) {
-            
             Word lastWord = words[i - 1];
             heading = lastWord.getEndHeading();
-            ofPoint offset(space * cos(ofDegToRad(heading)), space * sin(ofDegToRad(heading)));
-            ofTranslate(lastWord.getLastVertice() + offset);
-            ofRotate(lastWord.getEndHeading());
-        }
+            ofVec2f offset(space * cos(ofDegToRad(heading)), space * sin(ofDegToRad(heading)));
+            center = lastWord.getLastVertice() + offset;
+        } else center = start;
 
         
-        ofSetColor(ofMap(i, 0, words.size() - 1 , 0, 255));
-        words[i].draw(ofPoint(0,0));
-
+//        ofSetColor(ofMap(i, 0, words.size() - 1 , 0, 255));
+        ofSetColor(0);
+        words[i].draw(center, heading);
     }
-    ofPopMatrix();
-    ofPopMatrix();
 }
 
 //--------------------------------------------------------------

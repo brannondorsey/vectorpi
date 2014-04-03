@@ -22,8 +22,9 @@ class testApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+        void render(ofRectangle boundingBox);
         ofRectangle getWordsBoundingBox();
-
+        
 		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
