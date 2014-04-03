@@ -39,13 +39,14 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
     
-//    ofRectangle container = getWordsBoundingBox();
-//    ofPoint center = container.getCenter();
-//    float scale = ofGetWidth()/2 / max(container.width, container.height);
-    //    ofTranslate(screenCenter - center);
+    ofRectangle container = getWordsBoundingBox();
+    ofPoint center = container.getCenter();
+    float scale = 100 / max(container.width, container.height);
+    ofTranslate(screenCenter - center);
 
     ofPushMatrix();
-    ofTranslate(offset);
+    ofTranslate(center.x, center.y);
+    ofScale(scale, scale);
     render(ofRectangle(0,0,0,0));
     ofPopMatrix();
     
@@ -56,23 +57,26 @@ void testApp::render(ofRectangle bounding){
     float heading = 0;
     int space = 10;
     ofVec2f start(ofGetWidth()/2, ofGetHeight()/2);
+    ofSetColor(0);
     
-    for (int i = 0; i < words.size(); i++) {
+    words[0].draw(start, heading);
+    ofVec2f center = start;
+    
+    for (int i = 1; i < words.size(); i++) {
         
-        ofVec2f center;
         
-        if (i > 0) {
-            Word lastWord = words[i - 1];
-            heading = lastWord.getEndHeading();
-            ofVec2f offset(space * cos(ofDegToRad(heading)), space * sin(ofDegToRad(heading)));
-            center = lastWord.getLastVertice() + offset;
-        } else center = start;
+        Word lastWord = words[i - 1];
+        heading = lastWord.getEndHeading(heading);
+        
+        ofVec2f offset(space * cos(ofDegToRad(heading)), space * sin(ofDegToRad(heading)));
+        center = lastWord.getLastVertice() + offset;
 
-        
 //        ofSetColor(ofMap(i, 0, words.size() - 1 , 0, 255));
-        ofSetColor(0);
         words[i].draw(center, heading);
     }
+    
+    ofRectangle bound = getWordsBoundingBox();
+    ofRect(bound);
 }
 
 //--------------------------------------------------------------
@@ -81,8 +85,6 @@ ofRectangle testApp::getWordsBoundingBox(){
     ofRectangle container = words[0].getBoundingBox();
     for (int i = 1; i < words.size(); i++) {
         container = container.getUnion(words[i].getBoundingBox());
-//        cout<<container<<endl;
-//        cout<<endl;
     }
     return container;
 }

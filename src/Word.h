@@ -18,7 +18,7 @@ public:
     Word(string word, float angleIncrement, string characters);
     void draw(ofVec2f start, float rotation);
     void rotate(float rotation);
-    float getEndHeading();
+    float getEndHeading(float rotation);
     ofVec2f getFirstVertice();
     ofRectangle getBoundingBox();
     ofVec2f getLastVertice();
@@ -31,7 +31,8 @@ protected:
     float _angleIncrement;
     string _characters;
     string _word;
-    vector<ofVec2f> _angles;
+    vector<float> _angles;
+    ofPolyline _polyline;
     
 };
 
