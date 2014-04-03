@@ -15,16 +15,20 @@ public:
     
     ofPoint lastPoint;
     
-    Word(string word, float rotation, float angleIncrement, string characters);
-//    void setup(string word, ofPoint start, float rotation, float angleIncrement, string characters);
-    void draw(ofPoint start);
+    Word(const std::string& word,
+         float rotation,
+         float angleIncrement,
+         const std::string& characters);
+
+    //    void setup(string word, ofPoint start, float rotation, float angleIncrement, string characters);
+    void draw(const ofPoint& start);
     void rotate(float rotation);
-    void moveTo(ofPoint start);
+    void moveTo(const ofPoint& start);
     void fitTo(float size);
     void scaleWidthTo(float size);
     void scaleHeightTo(float size);
     float getEndHeading();
-    ofPoint getFirstVertice();
+    ofPoint getFirstVertice(); // TODO: vertex?
     ofRectangle getBoundingBox();
     ofPoint getLastVertice();
     
@@ -37,8 +41,8 @@ protected:
     float _angleIncrement;
     float _rotation;
     ofPolyline _polyline;
-    string _characters;
-    string _word;
+    std::string _characters;
+    std::string _word;
     
 };
 
