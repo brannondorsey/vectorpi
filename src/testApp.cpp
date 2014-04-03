@@ -15,6 +15,11 @@ void testApp::setup(){
     
     buffer = ofBufferFromFile("writings/the_stranger.txt");
     text = buffer.getText();
+
+    // TODO: std::transform is not UTF8 friendly.  Consider Poco::UTF8::toLower()
+    // or consider ofToLower, which will be UTF8 friendly as soon as I do a PR
+    // For now, ofToLower uses std::transform.
+
     std::transform(text.begin(), text.end(), text.begin(), ::tolower);
     cout<<text<<endl;
     vector<string> textWords = ofSplitString(text, " ");
