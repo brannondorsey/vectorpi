@@ -13,9 +13,9 @@ void testApp::setup(){
     characters = buffer.getText();
     characterIncrement = float(360) / characters.length();
     
-    buffer = ofBufferFromFile("writings/demo.txt");
+    buffer = ofBufferFromFile("writings/gatsby.txt");
     text = buffer.getText();
-    std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+    text = ofToLower(text);
     cout<<text<<endl;
     textWords = ofSplitString(text, " ");
     
@@ -56,7 +56,7 @@ void testApp::draw(){
 }
 
 //--------------------------------------------------------------
-void testApp::placeWords(ofVec2f start){
+void testApp::placeWords(const ofVec2f& start){
     
     words.clear();
     words.push_back(Word(textWords[0], start, 0, characterIncrement, characters));

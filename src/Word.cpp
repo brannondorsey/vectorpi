@@ -8,18 +8,20 @@
 
 #include "Word.h"
 
-Word::Word(string word, ofVec2f start, float rotation, float angleIncrement, string characters){
-    
-    _lineLength = 25;
-    _lineWidth = 1;
-    _circleWidth = 5;
-    
-    _word = word;
-    _characters = characters;
-    _angleIncrement = angleIncrement;
-    _polyline = ofPolyline();
-    
-    float angleInDegrees;
+Word::Word(const std::string& word,
+           ofVec2f start,
+           float rotation,
+           float angleIncrement,
+           const std::string& characters):
+_lineLength(24),
+_lineWidth(1),
+_circleWidth(5),
+_word(word),
+_characters(characters),
+_angleIncrement(angleIncrement),
+_polyline(ofPolyline())
+{
+    float angleInDegrees = 0;
     
     for (int i = 0; i < _word.length(); i++) {
         
@@ -60,7 +62,7 @@ void Word::draw(){
 
 }
 
-float Word::getEndHeading(float rotation){
+float Word::getEndHeading(const float& rotation){
     
     float angleSum = rotation;
     for (int i = 0; i < _angles.size(); i++) {
@@ -70,13 +72,11 @@ float Word::getEndHeading(float rotation){
 }
 
 ofVec2f Word::getFirstVertice(){
-    vector<ofPoint> vertices = _polyline.getVertices();
-    return vertices[0];
+    return _polyline[0];
 }
 
 ofVec2f Word::getLastVertice(){
-    vector<ofPoint> vertices = _polyline.getVertices();
-    return vertices[vertices.size() - 1];
+    return _polyline[_polyline.size() - 1];
 }
 
 ofRectangle Word::getBoundingBox(){

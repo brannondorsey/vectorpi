@@ -15,10 +15,13 @@ public:
     
     ofPoint lastPoint;
     
-    Word(string word, ofVec2f start, float rotation, float angleIncrement, string characters);
+    Word(const std::string& word,
+         ofVec2f start,
+         float rotation,
+         float angleIncrement,
+         const std::string& characters);
     void draw();
-    void rotate(float rotation);
-    float getEndHeading(float rotation);
+    float getEndHeading(const float& rotation);
     ofVec2f getFirstVertice();
     ofRectangle getBoundingBox();
     ofVec2f getLastVertice();
@@ -29,9 +32,9 @@ protected:
     int _lineWidth;
     float _circleWidth;
     float _angleIncrement;
-    string _characters;
-    string _word;
-    vector<float> _angles;
+    std::string _characters;
+    std::string _word;
+    std::vector<float> _angles;
     ofPolyline _polyline;
     
 };

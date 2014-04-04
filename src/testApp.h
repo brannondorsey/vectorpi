@@ -11,21 +11,21 @@ class testApp : public ofBaseApp{
         float scale;
         float characterIncrement; // e.g. 7 degrees
         bool needsNewPlacement;
-        string characters;
-        string text;
+        std::string characters;
+        std::string text;
         ofPoint startPoint;
         ofPoint nextPoint;
         ofPoint offset;
         ofPoint screenCenter;
         ofRectangle bound;
         ofPolyline polyline;
-        vector<string> textWords;
-        vector<Word> words;
+        std::vector<std::string> textWords;
+        std::vector<Word> words;
     
 		void setup();
 		void update();
 		void draw();
-        void placeWords(ofVec2f start);
+        void placeWords(const ofVec2f& start);
         ofRectangle getWordsBoundingBox();
         
 		void keyPressed(int key);
