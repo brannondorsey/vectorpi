@@ -10,20 +10,24 @@ class testApp : public ofBaseApp{
         int lineLength;
         float scale;
         float characterIncrement; // e.g. 7 degrees
-        string characters;
-        string text;
+        bool needsNewPlacement;
+        std::string characters;
+        std::string text;
         ofPoint startPoint;
         ofPoint nextPoint;
         ofPoint offset;
         ofPoint screenCenter;
+        ofRectangle bound;
         ofPolyline polyline;
-        vector<Word> words;
+        std::vector<std::string> textWords;
+        std::vector<Word> words;
     
 		void setup();
 		void update();
 		void draw();
+        void placeWords(const ofVec2f& start);
         ofRectangle getWordsBoundingBox();
-
+        
 		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );

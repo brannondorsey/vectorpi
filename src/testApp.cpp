@@ -13,88 +13,70 @@ void testApp::setup(){
     characters = buffer.getText();
     characterIncrement = float(360) / characters.length();
     
-    buffer = ofBufferFromFile("writings/the_stranger.txt");
+    buffer = ofBufferFromFile("writings/gatsby.txt");
     text = buffer.getText();
-
-    // TODO: std::transform is not UTF8 friendly.  Consider Poco::UTF8::toLower()
-    // or consider ofToLower, which will be UTF8 friendly as soon as I do a PR
-    // For now, ofToLower uses std::transform.
-
-    std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+    text = ofToLower(text);
     cout<<text<<endl;
-    vector<string> textWords = ofSplitString(text, " ");
+    textWords = ofSplitString(text, " ");
     
     screenCenter = ofPoint(ofGetWidth()/2, ofGetHeight()/2);
     offset = ofPoint(0, 0);
     scale = 1;
     
-    
-//    for (int i = 0; i < textWords.size(); i++) {
-//        
-//        if ((i % 40 == 0) && (x != 0)){
-//            y += space;
-//            x = 0;
-//        }
-//        
-//        ofPoint start(x, y);
-//        Word word = Word(textWords[i], start, 0, characterIncrement, characters);
-//        words.push_back(word);
-//        
-//        x += space;
-//    }
-        
-    for (int i = 0; i < textWords.size(); i++) {
-        
-        Word word = Word(textWords[i], 0, characterIncrement, characters);
-        words.push_back(word);
-        
-    }
-    
-//    getWordsBoundingBox()
+    placeWords(ofVec2f(0, 0));
+    needsNewPlacement = true;
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
     
+    if (needsNewPlacement) {
+        
+        ofVec2f start = words[0].getFirstVertice();
+        ofRectangle bound = getWordsBoundingBox();
+        ofVec2f diff = start - bound.getCenter();
+        scale = 650 / max(bound.width, bound.height);
+        placeWords(diff);
+        needsNewPlacement = false;
+    }
+    
+    bound = getWordsBoundingBox();
+
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
     
-    ofRectangle container = getWordsBoundingBox();
-    ofPoint center = container.getCenter();
-//    float scale = ofGetWidth()/2 / max(container.width, container.height);
-    
-    ofPushMatrix();
-    ofTranslate(offset);
-    ofPushMatrix();
-    
-    ofTranslate(screenCenter - center);
-    ofSetRectMode(OF_RECTMODE_CENTER);
-//    ofRect(container);
+    ofTranslate(screenCenter - bound.getCenter());
     ofScale(scale, scale);
+    for (int i = 0; i < words.size(); i++) {
+        ofSetColor(ofMap(i, 0, words.size() - 1 , 0, 230));
+        words[i].draw();
+    }
+}
+
+//--------------------------------------------------------------
+void testApp::placeWords(const ofVec2f& start){
+    
+    words.clear();
+    words.push_back(Word(textWords[0], start, 0, characterIncrement, characters));
     
     float heading = 0;
     int space = 10;
+    ofVec2f center = start;
     
-    for (int i = 0; i < words.size(); i++) {
+    for (int i = 1; i < textWords.size(); i++) {
         
-        if (i > 0) {
-            
-            Word lastWord = words[i - 1];
-            heading = lastWord.getEndHeading();
-            ofPoint offset(space * cos(ofDegToRad(heading)), space * sin(ofDegToRad(heading)));
-            ofTranslate(lastWord.getLastVertice() + offset);
-            ofRotate(lastWord.getEndHeading());
-        }
-
+        Word lastWord = words[i - 1];
+        heading = lastWord.getEndHeading(heading);
         
-        ofSetColor(ofMap(i, 0, words.size() - 1 , 0, 255));
-        words[i].draw(ofPoint(0,0));
-
+        ofVec2f offset(space * cos(ofDegToRad(heading)), space * sin(ofDegToRad(heading)));
+        center = lastWord.getLastVertice() + offset;
+        
+        Word word = Word(textWords[i], center, heading, characterIncrement, characters);
+        words.push_back(word);
+        
     }
-    ofPopMatrix();
-    ofPopMatrix();
 }
 
 //--------------------------------------------------------------
@@ -103,8 +85,6 @@ ofRectangle testApp::getWordsBoundingBox(){
     ofRectangle container = words[0].getBoundingBox();
     for (int i = 1; i < words.size(); i++) {
         container = container.getUnion(words[i].getBoundingBox());
-//        cout<<container<<endl;
-//        cout<<endl;
     }
     return container;
 }
