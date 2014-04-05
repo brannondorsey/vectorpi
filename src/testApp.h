@@ -8,19 +8,23 @@ class testApp : public ofBaseApp{
 	public:
         
         int lineLength;
+        int speed;
         float scale;
         float characterIncrement; // e.g. 7 degrees
         bool needsNewPlacement;
+        bool saveFrame;
         std::string characters;
         std::string text;
+        std::vector<std::string> textWords;
+        std::vector<Word> words;
         ofPoint startPoint;
         ofPoint nextPoint;
         ofPoint offset;
         ofPoint screenCenter;
         ofRectangle bound;
         ofPolyline polyline;
-        std::vector<std::string> textWords;
-        std::vector<Word> words;
+        ofImage image;
+        ofFbo fbo;
     
 		void setup();
 		void update();

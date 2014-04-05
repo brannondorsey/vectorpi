@@ -4,6 +4,7 @@
 void testApp::setup(){
     
     ofEnableAntiAliasing();
+//    ofEnableSmoothing();
     ofBackground(255);
     ofSetColor(0);
     ofSetLineWidth(1);
@@ -19,12 +20,17 @@ void testApp::setup(){
     cout<<text<<endl;
     textWords = ofSplitString(text, " ");
     
+    fbo.allocate(3600, 4600);
+    ofClear(255, 255, 255);
+
     screenCenter = ofPoint(ofGetWidth()/2, ofGetHeight()/2);
     offset = ofPoint(0, 0);
     scale = 1;
+    speed = 10;
     
     placeWords(ofVec2f(0, 0));
     needsNewPlacement = true;
+    saveFrame = false;
 }
 
 //--------------------------------------------------------------
@@ -47,11 +53,17 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
     
+    if (saveFrame) ofBeginSaveScreenAsPDF("images/" + ofToString(ofGetUnixTime()) + ".pdf");
+    ofTranslate(offset);
     ofTranslate(screenCenter - bound.getCenter());
     ofScale(scale, scale);
     for (int i = 0; i < words.size(); i++) {
         ofSetColor(ofMap(i, 0, words.size() - 1 , 0, 230));
         words[i].draw();
+    }
+    if (saveFrame) {
+        ofEndSaveScreenAsPDF();
+        saveFrame = false;
     }
 }
 
@@ -92,7 +104,7 @@ ofRectangle testApp::getWordsBoundingBox(){
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
     
-    int speed = 10;
+    
     float scaleInterval = .025;
     
     if (key == OF_KEY_RIGHT) offset.x += speed;
@@ -100,11 +112,16 @@ void testApp::keyPressed(int key){
     if (key == OF_KEY_DOWN) offset.y += speed;
     if (key == OF_KEY_UP) offset.y -= speed;
     
-    if (key == '-') scale -= scaleInterval;
-    if (key == '=') scale += scaleInterval;
+    if (key == '-') {
+        scale -= scaleInterval;
+    }
+    
+    if (key == '='){
+        scale += scaleInterval;
+    }
     
     if (key == ' '){
-        ofSaveScreen("images/" + ofToString(ofGetUnixTime()) + ".png");
+        saveFrame = true;
     }
 }
 
